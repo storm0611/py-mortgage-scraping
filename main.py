@@ -11,8 +11,8 @@ from mortgagesolutions import mortgagesolutions_scraper
 from commercialtrust import commercialtrust_scraper
 
 if __name__ == "__main__":
-    # mortgagestrategy_scraper.start()
-    # independent_scraper.start()
+    mortgagestrategy_scraper.start()
+    independent_scraper.start()
     moneyweek_scraper.start()
     sky_scraper.start()
     theguardian_scraper.start()

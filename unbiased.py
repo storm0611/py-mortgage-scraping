@@ -29,7 +29,10 @@ class UnbiasedScraper:
             j += 1
             for i in range(len(elements)):
                 element = elements[i]
-                link = element.get_attribute("href")
+                try:
+                    link = element.get_attribute("href")
+                except:
+                    link = ""
                 title = ""
                 try:
                     title = element.find_element(By.CSS_SELECTOR, 'h2').text.strip()
