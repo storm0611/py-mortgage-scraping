@@ -9,7 +9,7 @@ from export import export_one
 
 load_dotenv()
 
-class TheguardianScraper:
+class UnbiasedScraper:
 
     def __init__(self) -> None:
         pass
@@ -19,9 +19,9 @@ class TheguardianScraper:
         options.headless = False
         driver = uc.Chrome(options=options)
         driver.maximize_window()
-        driver.get("https://www.theguardian.com/money/mortgages")
+        driver.get("https://www.unbiased.co.uk/news")
         elements = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div.fc-item h3 a[data-link-name="article"]'))
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a.home-link'))
         )
         i = 0
         j = 0
@@ -30,32 +30,33 @@ class TheguardianScraper:
             for i in range(len(elements)):
                 element = elements[i]
                 link = element.get_attribute("href")
-                title = element.text
+                title = ""
                 try:
+                    title = element.find_element(By.CSS_SELECTOR, 'h2').text.strip()
                     if title != "":
                         export_one(
                             data={
                                 "link": link,
                                 "title": title
                             },
-                            filename="theguardian.xlsx"
+                            filename="unbiased.xlsx"
                         )
-                        print(f"www.theguardian.com page {j} article {i} saved")
+                        print(f"www.unbiased.co.uk page {j} article {i} saved")
                 except:
                     pass
             try:
                 element = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div.pagination__list a[aria-label=" next page"]'))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'a.next'))
                 )
                 if element.get_attribute("href").split("=")[-1] == str(j):
                     break
                 driver.get(element.get_attribute("href"))
                 elements = WebDriverWait(driver, 10).until(
-                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div.fc-item h3 a[data-link-name="article"]'))
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'a.home-link'))
                 )
             except:
                 break
         
         driver.quit()
 
-theguardian_scraper = TheguardianScraper()
+unbiased_scraper = UnbiasedScraper()

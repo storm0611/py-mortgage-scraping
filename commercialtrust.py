@@ -9,7 +9,7 @@ from export import export_one
 
 load_dotenv()
 
-class TheguardianScraper:
+class CommercialtrustScraper:
 
     def __init__(self) -> None:
         pass
@@ -19,9 +19,9 @@ class TheguardianScraper:
         options.headless = False
         driver = uc.Chrome(options=options)
         driver.maximize_window()
-        driver.get("https://www.theguardian.com/money/mortgages")
+        driver.get("https://www.commercialtrust.co.uk/news/")
         elements = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div.fc-item h3 a[data-link-name="article"]'))
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'article h5 a'))
         )
         i = 0
         j = 0
@@ -38,24 +38,24 @@ class TheguardianScraper:
                                 "link": link,
                                 "title": title
                             },
-                            filename="theguardian.xlsx"
+                            filename="commercialtrust.xlsx"
                         )
-                        print(f"www.theguardian.com page {j} article {i} saved")
+                        print(f"www.commercialtrust.co.uk page {j} article {i} saved")
                 except:
                     pass
             try:
                 element = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div.pagination__list a[aria-label=" next page"]'))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, '#pagelink-next'))
                 )
                 if element.get_attribute("href").split("=")[-1] == str(j):
                     break
                 driver.get(element.get_attribute("href"))
                 elements = WebDriverWait(driver, 10).until(
-                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div.fc-item h3 a[data-link-name="article"]'))
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'article h5 a'))
                 )
             except:
                 break
         
         driver.quit()
 
-theguardian_scraper = TheguardianScraper()
+commercialtrust_scraper = CommercialtrustScraper()
