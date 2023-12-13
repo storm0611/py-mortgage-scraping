@@ -20,6 +20,17 @@ class MoneyweekScraper:
         driver = uc.Chrome(options=options)
         driver.maximize_window()
         driver.get("https://moneyweek.com/personal-finance/mortgages")
+        try:
+            iframe_elem = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'iframe[id*="sp_message_iframe"]')))
+            driver.switch_to.frame(iframe_elem)
+            button = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, 'button[title="AGREE"]'))
+            )
+            button.click()
+            driver.switch_to.default_content()
+        except:
+            pass
         elements = WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'section.listing .listing__item a.listing__link'))
         )
@@ -45,9 +56,12 @@ class MoneyweekScraper:
         pages = WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div.flexi-pagination a'))
         )
+        page_links = []
         for page in pages:
+            page_links.append(page.get_attribute("href"))
+        for page in page_links:
             j += 1
-            driver.get(page.get_attribute("href"))
+            driver.get(page)
             elements = WebDriverWait(driver, 10).until(
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'section.listing .listing__item a.listing__link'))
             )
